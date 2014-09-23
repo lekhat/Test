@@ -18,3 +18,8 @@ dependencies {
   compile("org.apache.hadoop:hadoop-mapreduce-client-core:$hadoopVersion")
   testCompile("junit:junit:$junitVersion")
 }
+
+task getWADL(type:JavaExec) {
+  main = 'com.microsoft.cisl.GetWADLContract'
+  classpath = sourceSets.main.runtimeClasspath
+}
