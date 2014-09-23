@@ -20,6 +20,7 @@ dependencies {
 }
 
 task getWADL(type:JavaExec) {
+  description 'Query Hadoop for the definitive wadl specification WebHDFS is using. Write it to a file.'
   main = 'com.microsoft.cisl.GetWADLContract'
   classpath = sourceSets.main.runtimeClasspath
 }

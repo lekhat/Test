@@ -2,26 +2,8 @@
 <application xmlns="http://wadl.dev.java.net/2009/02">
     <doc xmlns:jersey="http://jersey.java.net/" jersey:generatedBy="Jersey: 1.9 09/02/2011 11:17 AM"/>
     <grammars/>
-    <resources base="http://localhost:50873/webhdfs/v1/">
+    <resources base="http://localhost:50951/webhdfs/v1/">
         <resource path="">
-            <method id="getRoot" name="GET">
-                <request>
-                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="delegation" style="query" type="xs:string" default=""/>
-                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="user.name" style="query" type="xs:string" default=""/>
-                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="doas" style="query" type="xs:string" default=""/>
-                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="op" style="query" type="xs:string" default="null"/>
-                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="offset" style="query" type="xs:string" default="0"/>
-                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="length" style="query" type="xs:string" default="null"/>
-                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="renewer" style="query" type="xs:string" default="null"/>
-                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="buffersize" style="query" type="xs:string" default="null"/>
-                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="xattr.name" style="query" type="xs:string" default=""/>
-                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="encoding" style="query" type="xs:string" default=""/>
-                </request>
-                <response>
-                    <representation mediaType="application/octet-stream"/>
-                    <representation mediaType="application/json"/>
-                </response>
-            </method>
             <method id="putRoot" name="PUT">
                 <request>
                     <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="delegation" style="query" type="xs:string" default=""/>
@@ -77,6 +59,24 @@
                     <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="snapshotname" style="query" type="xs:string" default=""/>
                 </request>
                 <response>
+                    <representation mediaType="application/json"/>
+                </response>
+            </method>
+            <method id="getRoot" name="GET">
+                <request>
+                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="delegation" style="query" type="xs:string" default=""/>
+                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="user.name" style="query" type="xs:string" default=""/>
+                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="doas" style="query" type="xs:string" default=""/>
+                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="op" style="query" type="xs:string" default="null"/>
+                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="offset" style="query" type="xs:string" default="0"/>
+                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="length" style="query" type="xs:string" default="null"/>
+                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="renewer" style="query" type="xs:string" default="null"/>
+                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="buffersize" style="query" type="xs:string" default="null"/>
+                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="xattr.name" style="query" type="xs:string" default=""/>
+                    <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="encoding" style="query" type="xs:string" default=""/>
+                </request>
+                <response>
+                    <representation mediaType="application/octet-stream"/>
                     <representation mediaType="application/json"/>
                 </response>
             </method>
