@@ -6,10 +6,15 @@ task downloadWrapper(type: Wrapper) {
     gradleVersion = project.gradleVersion
 }
 
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
 dependencies {
   compile("org.apache.hadoop:hadoop-common:$hadoopVersion")
   compile("org.apache.hadoop:hadoop-hdfs:$hadoopVersion")
-  testCompile("org.apache.hadoop:hadoop-minicluster:$hadoopVersion")
+  compile("org.apache.hadoop:hadoop-minicluster:$hadoopVersion")
   compile("org.apache.hadoop:hadoop-mapreduce-client-core:$hadoopVersion")
   testCompile("junit:junit:$junitVersion")
 }
