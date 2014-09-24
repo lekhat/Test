@@ -2,7 +2,7 @@
 <application xmlns="http://wadl.dev.java.net/2009/02">
     <doc xmlns:jersey="http://jersey.java.net/" jersey:generatedBy="Jersey: 1.9 09/02/2011 11:17 AM"/>
     <grammars/>
-    <resources base="http://localhost:50951/webhdfs/v1/">
+    <resources base="http://localhost:51573/webhdfs/v1/">
         <resource path="">
             <method id="putRoot" name="PUT">
                 <request>
