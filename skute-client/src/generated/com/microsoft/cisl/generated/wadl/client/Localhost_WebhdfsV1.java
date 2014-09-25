@@ -14,7 +14,7 @@ import com.sun.jersey.api.uri.UriTemplate;
 
 @Generated(value = {
     "wadl|file:/Users/jahoman/work/webby/src/main/resources/wadl/webhdfs.wadl"
-}, comments = "wadl2java, http://wadl.java.net", date = "2014-09-23T17:25:51.506-07:00")
+}, comments = "wadl2java, http://wadl.java.net", date = "2014-09-24T15:48:39.901-07:00")
 public class Localhost_WebhdfsV1 {
 
     /**

@@ -1,0 +1,1 @@
+include 'skute-server', 'skute-client', 'skute-filesystem', 'skute-hdfs', 'skute-webhdfs-test'

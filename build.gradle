@@ -1,69 +1,105 @@
 apply plugin: 'java'
-apply plugin: 'idea'
 
 task downloadWrapper(type: Wrapper) {
     description = "Download the gradle wrapper and requisite files. Overwrites existing wrapper files."
     gradleVersion = project.gradleVersion
 }
 
-repositories {
-  mavenLocal()
-  mavenCentral()
-}
+allprojects {
+  apply plugin: 'idea'
 
-dependencies {
-  compile("org.apache.hadoop:hadoop-common:$hadoopVersion")
-  compile("org.apache.hadoop:hadoop-hdfs:$hadoopVersion")
-  compile("org.apache.hadoop:hadoop-minicluster:$hadoopVersion")
-  compile("org.apache.hadoop:hadoop-mapreduce-client-core:$hadoopVersion")
-  testCompile("junit:junit:$junitVersion")
-
-  compile('com.sun.jersey:jersey-core:1.18.1')
-  compile('com.sun.jersey:jersey-client:1.18.1')
-}
-
-task getWADL(type:JavaExec) {
-  description 'Query Hadoop for the definitive wadl specification WebHDFS is using. Write it to a file.'
-  main = 'com.microsoft.cisl.GetWADLContract'
-  classpath = sourceSets.main.runtimeClasspath
-}
-
-configurations {
-  codeGen
-}
-
-sourceSets {
-  codeGen {
-    java.srcDir "${projectDir}/src/generated"
-    compileClasspath += configurations.compile
-  }
-  main {
-    runtimeClasspath += sourceSets.codeGen.output
+  repositories {
+    mavenLocal()
+    mavenCentral()
   }
 }
-compileJava.dependsOn(compileCodeGenJava)
 
-// We should also take a look at Apache CXF, which seems to do the same thing:
-// http://cxf.apache.org/docs/jaxrs-services-description.html#JAXRSServicesDescription-wadl2javaMavenplugin
-// Current tools downloaded from here: https://wadl.java.net/
-task wadl2java(dependsOn: 'compileJava') << {
-  description 'Generate a REST client from the WADL specification obtained through getWADL'
-  if(!file("${projectDir}/src/main/resources/wadl/webhdfs.wadl").exists()) {
-    println "hi!"
-    getWADL.exec()
+subprojects {
+  apply plugin: 'java'
+
+  dependencies {
+    testCompile("junit:junit:$junitVersion")
+  }
+}
+
+project(":skute-server") {
+  dependencies {
+    compile project(':skute-filesystem')
+
+    compile("com.sun.jersey:jersey-server:$jerseyVersion")
+    compile("com.sun.jersey:jersey-client:$jerseyVersion")
+
+    compile("org.apache.hadoop:hadoop-common:$hadoopVersion")
+    compile("org.apache.hadoop:hadoop-hdfs:$hadoopVersion")
+  }
+}
+
+project(":skute-filesystem") {
+}
+
+project(":skute-hdfs") {
+  dependencies {
+    compile project(':skute-filesystem')
+  }
+}
+
+project(":skute-client") {
+  dependencies {
+    compile("org.apache.hadoop:hadoop-common:$hadoopVersion")
+    compile("org.apache.hadoop:hadoop-hdfs:$hadoopVersion")
+    compile("org.apache.hadoop:hadoop-minicluster:$hadoopVersion")
+    compile("org.apache.hadoop:hadoop-mapreduce-client-core:$hadoopVersion")
   }
 
-  FileTree cp = fileTree(dir:"${projectDir}/resources/wadl-dist-1.1.6/lib", exclude:"**/wadl-cmdline*.jar")
+ configurations {
+    codeGen
+  }
 
-  String target = "${projectDir}/src/generated"
-  String description = "src/main/resources/wadl/webhdfs.wadl"
-  ant.properties['wadl2java.project'] = "${projectDir}/resources/wadl-dist-1.1.6/bin/wadl2java"
+  sourceSets {
+    codeGen {
+      java.srcDir "${projectDir}/src/generated"
+      compileClasspath += configurations.compile
+    }
+    main {
+      runtimeClasspath += sourceSets.codeGen.output
+    }
+  }
+  compileJava.dependsOn(compileCodeGenJava)
 
-  ant.taskdef(name: 'wjc',
-      classname: 'org.jvnet.ws.wadl2java.WJCTask',
-      classpath: cp.asPath /* And boy does it mean asPath... argh */)
+  // We should also take a look at Apache CXF, which seems to do the same thing:
+  // http://cxf.apache.org/docs/jaxrs-services-description.html#JAXRSServicesDescription-wadl2javaMavenplugin
+  // Current tools downloaded from here: https://wadl.java.net/
+  task wadl2java(dependsOn: 'compileJava') << {
+    description 'Generate a REST client from the WADL specification obtained through getWADL'
+    if(!file("${projectDir}/src/main/resources/wadl/webhdfs.wadl").exists()) {
+      println "hi!"
+      getWADL.exec()
+    }
 
-  ant.wjc(package: 'com.microsoft.cisl.generated.wadl.client',
-          target: target,
-          description: description)
+    FileTree cp = fileTree(dir:"${projectDir}/resources/wadl-dist-1.1.6/lib", exclude:"**/wadl-cmdline*.jar")
+
+    String target = "${projectDir}/src/generated"
+    String description = "src/main/resources/wadl/webhdfs.wadl"
+    ant.properties['wadl2java.project'] = "${projectDir}/resources/wadl-dist-1.1.6/bin/wadl2java"
+
+    ant.taskdef(name: 'wjc',
+        classname: 'org.jvnet.ws.wadl2java.WJCTask',
+        classpath: cp.asPath /* And boy does it mean asPath... argh */)
+
+    ant.wjc(package: 'com.microsoft.cisl.generated.wadl.client',
+            target: target,
+            description: description)
+  }
+
+  task getWADL(type:JavaExec) {
+    description 'Query Hadoop for the definitive wadl specification WebHDFS is using. Write it to a file.'
+    main = 'com.microsoft.cisl.GetWADLContract'
+    classpath = sourceSets.main.runtimeClasspath
+  }
 }
+
+project(":skute-webhdfs-test") {
+  dependencies {
+    compile project(':skute-filesystem')
+  }}
+
