@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.microsoft.cisl.skute;
+package com.microsoft.cisl.skute.server;
 
 import com.sun.jersey.spi.container.ResourceFilters;
 import org.apache.hadoop.hdfs.web.ParamFilter;

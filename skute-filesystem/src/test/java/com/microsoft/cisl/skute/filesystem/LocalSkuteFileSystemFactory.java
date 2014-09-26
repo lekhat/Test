@@ -16,7 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.microsoft.cisl.skute;
+package com.microsoft.cisl.skute.filesystem;
 
-public class SkuteFileSystemFactory {
+import java.nio.file.FileSystems;
+import java.util.Properties;
+import java.nio.file.Path;
+
+public class LocalSkuteFileSystemFactory implements SkuteFileSystemFactory {
+  public static final String ROOT = "localskutefilesystem.root";
+
+  @Override
+  public SkuteFileSystem getSkuteFileSystem(Properties properties) {
+    if(!properties.containsKey(ROOT)) {
+      throw new IllegalArgumentException("Must specify root directory for LocalSkuteFileSystem");
+    }
+
+    String rootString = (String) properties.get(ROOT);
+    Path root = FileSystems.getDefault().getPath(rootString);
+
+    return new LocalSkuteFileSystem(root);
+  }
 }

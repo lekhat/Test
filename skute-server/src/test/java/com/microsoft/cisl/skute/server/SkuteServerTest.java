@@ -1,4 +1,4 @@
-package com.microsoft.cisl.skute;
+package com.microsoft.cisl.skute.server;
 
 import org.junit.Test;
 

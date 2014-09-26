@@ -16,7 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.microsoft.cisl.skute;
+package com.microsoft.cisl.skute.filesystem;
 
-public class SkuteFileSystem {
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Files;
+
+public class LocalSkuteFileSystem implements SkuteFileSystem {
+
+  final Path root;
+
+  public LocalSkuteFileSystem(Path root) {
+    this.root = root;
+  }
+
+  @Override
+  public void start() { /* Nothing to do */ }
+
+  @Override
+  public void stop() { /* Nothing to do */ }
+
+  @Override
+  public SkuteResult mkdir(String path, short permission) {
+    Path result = FileSystems.getDefault().getPath(root.toString(), path);
+    try {
+      Files.createDirectory(result);
+    } catch (IOException e) {
+      System.err.println(e);
+      return SkuteResult.ERR;
+    }
+    return SkuteResult.OK;
+  }
 }

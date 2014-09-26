@@ -101,5 +101,6 @@ project(":skute-client") {
 project(":skute-webhdfs-test") {
   dependencies {
     compile project(':skute-filesystem')
-  }}
+  }
+}
 
