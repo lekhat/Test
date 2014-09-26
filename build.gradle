@@ -37,9 +37,13 @@ project(":skute-server") {
 project(":skute-filesystem") {
 }
 
-project(":skute-hdfs") {
+project(":skute-hadoop-filesystem") {
   dependencies {
     compile project(':skute-filesystem')
+
+    compile("org.apache.hadoop:hadoop-common:$hadoopVersion")
+
+    testCompile("org.apache.hadoop:hadoop-minicluster:$hadoopVersion")
   }
 }
 

@@ -21,5 +21,5 @@ package com.microsoft.cisl.skute.filesystem;
 import java.util.Properties;
 
 public interface SkuteFileSystemFactory {
-  public SkuteFileSystem getSkuteFileSystem(Properties properties);
+  public SkuteFileSystem getSkuteFileSystem(Properties properties) throws Exception;
 }

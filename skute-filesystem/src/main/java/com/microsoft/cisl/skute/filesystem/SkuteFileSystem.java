@@ -18,11 +18,13 @@
  */
 package com.microsoft.cisl.skute.filesystem;
 
+import java.io.IOException;
+
 public interface SkuteFileSystem {
 
-  public void start();
+  public void start() throws Exception;
 
-  public void stop();
+  public void stop() throws Exception;
 
   public SkuteResult mkdir(String path, short permission);
 }

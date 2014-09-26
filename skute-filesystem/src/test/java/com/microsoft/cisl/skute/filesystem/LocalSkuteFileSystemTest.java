@@ -1,6 +1,5 @@
 package com.microsoft.cisl.skute.filesystem;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
