@@ -7,6 +7,7 @@ task downloadWrapper(type: Wrapper) {
 
 allprojects {
   apply plugin: 'idea'
+  apply plugin: 'eclipse'
 
   repositories {
     mavenLocal()
@@ -18,19 +19,34 @@ subprojects {
   apply plugin: 'java'
 
   dependencies {
+    compile("commons-logging:commons-logging:$commonsLoggingVersion")
     testCompile("junit:junit:$junitVersion")
   }
 }
 
 project(":skute-server") {
+  apply plugin: 'war'
+  apply plugin: 'jetty'
+
   dependencies {
     compile project(':skute-filesystem')
 
-    compile("com.sun.jersey:jersey-server:$jerseyVersion")
-    compile("com.sun.jersey:jersey-client:$jerseyVersion")
+    compile("org.apache.hadoop:hadoop-common:$hadoopVersion") {
+      exclude group: 'com.sun.jersey'
+    }
+    compile("org.apache.hadoop:hadoop-hdfs:$hadoopVersion") {
+      exclude group: 'com.sun.jersey'
+    }
 
-    compile("org.apache.hadoop:hadoop-common:$hadoopVersion")
-    compile("org.apache.hadoop:hadoop-hdfs:$hadoopVersion")
+    compile("org.glassfish.jersey.containers:jersey-container-servlet-core:$jerseyVersion")
+    compile("org.glassfish.jersey.core:jersey-client:$jerseyVersion")
+    compile("org.glassfish.jersey.core:jersey-server:$jerseyVersion")
+
+    compile('org.eclipse.jetty:jetty-server:9.2.3.v20140905')
+    compile('org.eclipse.jetty:jetty-servlet:9.2.3.v20140905')
+
+    testCompile("com.jayway.restassured:rest-assured:$restAssuredVersion")
+    testCompile("org.glassfish.jersey.containers:jersey-container-jdk-http:$jerseyVersion")
   }
 }
 
@@ -41,9 +57,13 @@ project(":skute-hadoop-filesystem") {
   dependencies {
     compile project(':skute-filesystem')
 
-    compile("org.apache.hadoop:hadoop-common:$hadoopVersion")
+    compile("org.apache.hadoop:hadoop-common:$hadoopVersion") {
+      exclude group: 'com.sun.jersey'
+    }
 
-    testCompile("org.apache.hadoop:hadoop-minicluster:$hadoopVersion")
+    testCompile("org.apache.hadoop:hadoop-minicluster:$hadoopVersion") {
+      exclude group: 'com.sun.jersey'
+    }
   }
 }
 
@@ -105,6 +125,8 @@ project(":skute-client") {
 project(":skute-webhdfs-test") {
   dependencies {
     compile project(':skute-filesystem')
+    compile project(':skute-server')
+    compile project(':skute-hadoop-filesystem')
   }
 }
 
