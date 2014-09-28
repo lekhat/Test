@@ -31,11 +31,13 @@ public class SkuteHttpServer {
     context.setContextPath("/");
     server.setHandler(context);
     ServletHolder h = new ServletHolder(new ServletContainer());
-    h.setInitParameter(ServerProperties.PROVIDER_PACKAGES, SkuteServer.class.getCanonicalName());
+    h.setInitParameter(ServerProperties.PROVIDER_PACKAGES, SkuteServer.class.getPackage().toString());
     h.setInitOrder(1);
     context.addServlet(h, "/*");
     server.setDumpAfterStart(true);
+
     try  {
+
         server.start();
       Thread.sleep(100 * 1000);
     }catch(Exception ex) {

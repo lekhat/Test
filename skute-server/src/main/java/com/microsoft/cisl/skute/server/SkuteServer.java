@@ -165,6 +165,7 @@ public class SkuteServer {
       @QueryParam(OldSnapshotNameParam.NAME) @DefaultValue(OldSnapshotNameParam.DEFAULT)
           final OldSnapshotNameParam oldSnapshotName
       ) throws IOException, InterruptedException {
+    System.out.println("  public Response put(");
     switch(op.getValue()) {
       case MKDIRS:
       {
@@ -175,6 +176,7 @@ public class SkuteServer {
       }
       default:
       {
+        System.out.println("Hi!");
         return Response.ok().type(MediaType.APPLICATION_OCTET_STREAM).build();
       }
     }
@@ -225,6 +227,7 @@ public class SkuteServer {
       @QueryParam(BufferSizeParam.NAME) @DefaultValue(BufferSizeParam.DEFAULT)
           final BufferSizeParam bufferSize
       ) throws IOException, InterruptedException {
+    System.out.println("  public Response post(");
     throw new RuntimeException("Implement me!");
   }
 
@@ -287,6 +290,7 @@ public class SkuteServer {
       @QueryParam(XAttrEncodingParam.NAME) @DefaultValue(XAttrEncodingParam.DEFAULT)
           final XAttrEncodingParam xattrEncoding
       ) throws IOException, InterruptedException {
+    System.out.println("  public Response get(");
     throw new RuntimeException("Implement me!");
   }
 
