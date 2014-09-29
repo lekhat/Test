@@ -18,8 +18,6 @@
  */
 package com.microsoft.cisl.skute.filesystem;
 
-import java.io.IOException;
-
 public interface SkuteFileSystem {
 
   public void start() throws Exception;

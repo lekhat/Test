@@ -41,4 +41,9 @@ public class ChattySkuteFileSystem implements SkuteFileSystem {
     LOG.info(String.format("mkdir: path = %s, permission = %o", path, permission));
     return SkuteResult.OK;
   }
+
+  @Override
+  public String toString() {
+    return "ChattySkuteFileSystem";
+  }
 }

@@ -32,6 +32,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.List;
 
 @Path("")
@@ -43,10 +44,18 @@ public class SkuteServer {
 
   private static final UriFsPathParam ROOT = new UriFsPathParam("");
 
-  private static final String SKUTE_FILESYSTEM_ATTRIBUTE = "skute.filesystem";
+  public static final String SKUTE_FILESYSTEM_ATTRIBUTE = "skute.filesystem";
+
+  public static final int DEFAULT_PORT = 7552;
 
   private SkuteFileSystem getFileSystem() {
-    return (SkuteFileSystem)context.getAttribute(SKUTE_FILESYSTEM_ATTRIBUTE);
+    SkuteFileSystem sks = (SkuteFileSystem)context.getAttribute(SKUTE_FILESYSTEM_ATTRIBUTE);
+
+    if(LOG.isInfoEnabled()) {
+      System.out.println("Returning " + sks);
+      LOG.info("Returning " + sks);
+    }
+    return sks;
   }
 
   /** Handle HTTP PUT request for the root. */

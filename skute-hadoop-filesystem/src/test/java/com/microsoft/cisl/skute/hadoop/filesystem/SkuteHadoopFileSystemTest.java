@@ -1,17 +1,15 @@
 package com.microsoft.cisl.skute.hadoop.filesystem;
 
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
-import com.microsoft.cisl.skute.filesystem.SkuteResult;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class SkuteHadoopFileSystemTest {
 
