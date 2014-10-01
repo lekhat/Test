@@ -18,6 +18,6 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>skute-server</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/webhdfs/v1/*</url-pattern>
     </servlet-mapping>
 </web-app>

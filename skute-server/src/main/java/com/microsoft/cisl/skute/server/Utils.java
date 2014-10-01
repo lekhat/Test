@@ -19,9 +19,11 @@
 package com.microsoft.cisl.skute.server;
 
 public class Utils {
+  @SuppressWarnings("unchecked")
   static<T> T instantiateObject(String classname) throws Exception {
     try {
       Class klass = Class.forName(classname);
+
       return (T)klass.newInstance();
     } catch (ClassNotFoundException e) {
       throw new Exception(e);

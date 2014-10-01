@@ -1,32 +1,70 @@
 package com.microsoft.cisl.skute.server;
 
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
-import com.sun.net.httpserver.HttpServer;
-import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
+import com.microsoft.cisl.skute.filesystem.SkuteResult;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
-import static com.jayway.restassured.RestAssured.*;
-import static com.jayway.restassured.matcher.RestAssuredMatchers.*;
-import static org.hamcrest.Matchers.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import static com.jayway.restassured.RestAssured.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class SkuteServerTest {
+  private static final Log LOG = LogFactory.getLog(SkuteServerTest.class);
 
+  final public String PREFIX = "/webhdfs/v1";
+
+  @BeforeClass
+  static public void beforeClass() {
+    LogManager.getLogger("com.microsoft.cisl.skute").setLevel(Level.TRACE);
+  }
 
   @Test
-  public void sanityCheck() throws Exception {
-    SkuteFileSystem sfs = new ChattySkuteFileSystem();
+  public void mkdirSucceedsWhenExpected() throws Exception {
+    SkuteFileSystem sfs = when(mock(SkuteFileSystem.class)
+        .mkdir("/howdy", (short) 0755))
+        .thenReturn(SkuteResult.OK)
+        .getMock();
+
     SkuteHttpServer shs = new SkuteHttpServer(SkuteServer.DEFAULT_PORT, sfs);
+
+    LOG.info("SkuteHttpServer = " + shs);
 
     shs.start();
 
     try {
       given()
-          .port(SkuteServer.DEFAULT_PORT).
-          get("/lotto").then().body("lotto.lottoId", equalTo(5));
-
+          .port(SkuteServer.DEFAULT_PORT)
+          .param("op", "mkdirs")
+          .put(PREFIX + "/howdy")
+          .then()
+          .statusCode(200);
     } finally {
       shs.stop();
     }
+    verify(sfs).mkdir("/howdy", (short) 0755);
   }
+
+//  @Test
+//  @Ignore
+//  public void cheat() throws URISyntaxException, IOException {
+//    FileSystem fs = FileSystem.get(new URI("webhdfs://localhost:8000"), new Configuration());
+//
+//    fs.mkdirs(new Path("/howdy"));
+//  }
 }

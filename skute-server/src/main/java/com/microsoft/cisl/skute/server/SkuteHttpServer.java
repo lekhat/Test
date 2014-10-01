@@ -103,8 +103,8 @@ public class SkuteHttpServer {
     ServletHolder h = new ServletHolder(new ServletContainer());
     h.setInitParameter(ServerProperties.PROVIDER_PACKAGES, SkuteServer.class.getPackage().toString());
     h.setInitOrder(1);
-    context.addServlet(h, "/*");
-    server.setDumpAfterStart(true);
+    context.addServlet(h, "/webhdfs/v1/*");
+    server.setDumpAfterStart(false);
   }
 
   public void start() throws Exception {

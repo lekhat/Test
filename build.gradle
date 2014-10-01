@@ -48,6 +48,7 @@ project(":skute-server") {
 
     testCompile("com.jayway.restassured:rest-assured:$restAssuredVersion")
     testCompile("org.glassfish.jersey.containers:jersey-container-jdk-http:$jerseyVersion")
+    testCompile("org.mockito:mockito-all:$mockitoVersion")
   }
 }
 

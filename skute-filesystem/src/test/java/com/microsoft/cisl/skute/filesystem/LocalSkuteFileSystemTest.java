@@ -30,7 +30,7 @@ public class LocalSkuteFileSystemTest {
 
   @Before
   public void setUp() throws Exception {
-    TemporaryFolder tf = null;
+    TemporaryFolder tf;
     if (System.getProperty("test.build.dir") == null) {
       tf = new TemporaryFolder();
     } else {

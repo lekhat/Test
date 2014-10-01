@@ -20,6 +20,8 @@ package com.microsoft.cisl.skute.hadoop.filesystem;
 
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
 import com.microsoft.cisl.skute.filesystem.SkuteResult;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
@@ -31,6 +33,7 @@ import java.io.IOException;
  * This allows the SkuteServer to be backed by an Hadoop filesystem.
  */
 public class SkuteHadoopFileSystem implements SkuteFileSystem {
+  private static final Log LOG = LogFactory.getLog(SkuteHadoopFileSystem.class);
   private final FileSystem fs;
 
   public SkuteHadoopFileSystem(FileSystem fs) {
@@ -51,7 +54,10 @@ public class SkuteHadoopFileSystem implements SkuteFileSystem {
     try {
       fs.mkdirs(path, new FsPermission(permission));
     } catch (IOException e) {
-      System.err.println(e);
+      if (LOG.isWarnEnabled()) {
+        LOG.warn(String.format("Exception while processing mkdirs (path = %s, permission = %04d) from %s", path, permission));
+      }
+
       return SkuteResult.ERR;
     }
     return SkuteResult.OK;

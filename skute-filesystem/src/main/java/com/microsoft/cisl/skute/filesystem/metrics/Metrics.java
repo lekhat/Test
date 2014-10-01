@@ -16,13 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.microsoft.cisl.skute.filesystem;
+package com.microsoft.cisl.skute.filesystem.metrics;
 
-public interface SkuteFileSystem {
+/**
+ * Dead simple Metrics package to be replaced by something more useful...
+ */
+public interface Metrics {
+  public void incCounter(String counter) throws Exception;
 
-  public void start() throws Exception;
+  public void setGauge(String gauge) throws Exception;
 
-  public void stop() throws Exception;
+  public void setStatus(String status) throws Exception;
 
-  public SkuteResult mkdir(String path, short permission) throws Exception;
+  public long getCounter(String counter) throws Exception;
+
+  public long getGauge(String gauge) throws Exception;
+
+  public String getStatus(String status) throws Exception;
+
+  public String getReport() throws Exception;
 }

@@ -32,7 +32,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.List;
 
 @Path("")
@@ -49,13 +48,54 @@ public class SkuteServer {
   public static final int DEFAULT_PORT = 7552;
 
   private SkuteFileSystem getFileSystem() {
-    SkuteFileSystem sks = (SkuteFileSystem)context.getAttribute(SKUTE_FILESYSTEM_ATTRIBUTE);
+    return (SkuteFileSystem)context.getAttribute(SKUTE_FILESYSTEM_ATTRIBUTE);
+  }
 
-    if(LOG.isInfoEnabled()) {
-      System.out.println("Returning " + sks);
-      LOG.info("Returning " + sks);
-    }
-    return sks;
+  /** Handle HTTP DELETE request for the root. */
+  @DELETE
+  @Path("/")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response deleteRoot(
+      @Context final UserGroupInformation ugi,
+      @QueryParam(DelegationParam.NAME) @DefaultValue(DelegationParam.DEFAULT)
+          final DelegationParam delegation,
+      @QueryParam(UserParam.NAME) @DefaultValue(UserParam.DEFAULT)
+          final UserParam username,
+      @QueryParam(DoAsParam.NAME) @DefaultValue(DoAsParam.DEFAULT)
+          final DoAsParam doAsUser,
+      @QueryParam(DeleteOpParam.NAME) @DefaultValue(DeleteOpParam.DEFAULT)
+          final DeleteOpParam op,
+      @QueryParam(RecursiveParam.NAME) @DefaultValue(RecursiveParam.DEFAULT)
+          final RecursiveParam recursive,
+      @QueryParam(SnapshotNameParam.NAME) @DefaultValue(SnapshotNameParam.DEFAULT)
+          final SnapshotNameParam snapshotName
+      ) throws IOException, InterruptedException {
+    return delete(ugi, delegation, username, doAsUser, ROOT, op, recursive,
+        snapshotName);
+  }
+
+  /** Handle HTTP DELETE request. */
+  @DELETE
+  @Path("{" + UriFsPathParam.NAME + ":.*}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response delete(
+      @Context final UserGroupInformation ugi,
+      @QueryParam(DelegationParam.NAME) @DefaultValue(DelegationParam.DEFAULT)
+          final DelegationParam delegation,
+      @QueryParam(UserParam.NAME) @DefaultValue(UserParam.DEFAULT)
+          final UserParam username,
+      @QueryParam(DoAsParam.NAME) @DefaultValue(DoAsParam.DEFAULT)
+          final DoAsParam doAsUser,
+      @PathParam(UriFsPathParam.NAME) final UriFsPathParam path,
+      @QueryParam(DeleteOpParam.NAME) @DefaultValue(DeleteOpParam.DEFAULT)
+          final DeleteOpParam op,
+      @QueryParam(RecursiveParam.NAME) @DefaultValue(RecursiveParam.DEFAULT)
+          final RecursiveParam recursive,
+      @QueryParam(SnapshotNameParam.NAME) @DefaultValue(SnapshotNameParam.DEFAULT)
+          final SnapshotNameParam snapshotName
+      ) throws IOException, InterruptedException {
+    // @TODO: Implement me!
+    return notYetImplemented();
   }
 
   /** Handle HTTP PUT request for the root. */
@@ -174,19 +214,115 @@ public class SkuteServer {
       @QueryParam(OldSnapshotNameParam.NAME) @DefaultValue(OldSnapshotNameParam.DEFAULT)
           final OldSnapshotNameParam oldSnapshotName
       ) throws IOException, InterruptedException {
-    System.out.println("  public Response put(");
+
     switch(op.getValue()) {
+      case CREATE:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case CREATESYMLINK:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case RENAME:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case SETREPLICATION:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case SETOWNER:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case SETPERMISSION:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case SETTIMES:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case RENEWDELEGATIONTOKEN:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case CANCELDELEGATIONTOKEN:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case MODIFYACLENTRIES: {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case REMOVEACLENTRIES: {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case REMOVEDEFAULTACL: {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case REMOVEACL: {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case SETACL: {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case SETXATTR: {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case REMOVEXATTR: {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case CREATESNAPSHOT: {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case RENAMESNAPSHOT: {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
       case MKDIRS:
       {
-        SkuteResult result = getFileSystem().mkdir(path.getAbsolutePath(), permission.getValue());
+        if (LOG.isTraceEnabled()) {
+          LOG.trace(String.format("MKDIRS: path = %s, permission = %04d", path, permission.getFsPermission().toShort()));
+        }
 
-        String js = JsonUtil.toJsonString("boolean", result == SkuteResult.OK);
-        return Response.ok(js).type(MediaType.APPLICATION_JSON).build();
+        try {
+          SkuteResult result = getFileSystem().mkdir(path.getAbsolutePath(), permission.getFsPermission().toShort());
+          String js = JsonUtil.toJsonString("boolean", result == SkuteResult.OK);
+          Response response = Response.ok(js).type(MediaType.APPLICATION_JSON).build();
+
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("MKDIRS response = "  + response);
+          }
+
+          return response;
+        }catch (Exception e) {
+          if (LOG.isWarnEnabled()) {
+            LOG.warn(String.format("Exception while processing mkdirs (path = %s, permission = %04d) from %s", path, permission.getFsPermission().toShort()));
+          }
+        }
+
       }
       default:
       {
-        System.out.println("Hi!");
-        return Response.ok().type(MediaType.APPLICATION_OCTET_STREAM).build();
+        throw new UnsupportedOperationException(op + " is not supported");
       }
     }
 
@@ -236,8 +372,20 @@ public class SkuteServer {
       @QueryParam(BufferSizeParam.NAME) @DefaultValue(BufferSizeParam.DEFAULT)
           final BufferSizeParam bufferSize
       ) throws IOException, InterruptedException {
-    System.out.println("  public Response post(");
-    throw new RuntimeException("Implement me!");
+    switch(op.getValue()) {
+    case APPEND:
+    {
+      // @TODO: Implement me!
+      return notYetImplemented();
+    }
+    case CONCAT:
+    {
+      // @TODO: Implement me!
+      return notYetImplemented();
+    }
+    default:
+      throw new UnsupportedOperationException(op + " is not supported");
+    }
   }
 
   /** Handle HTTP GET request for the root. */
@@ -299,8 +447,71 @@ public class SkuteServer {
       @QueryParam(XAttrEncodingParam.NAME) @DefaultValue(XAttrEncodingParam.DEFAULT)
           final XAttrEncodingParam xattrEncoding
       ) throws IOException, InterruptedException {
-    System.out.println("  public Response get(");
-    throw new RuntimeException("Implement me!");
+
+    switch(op.getValue()) {
+      case OPEN:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case GET_BLOCK_LOCATIONS:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case GETFILESTATUS:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case LISTSTATUS:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case GETCONTENTSUMMARY:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case GETFILECHECKSUM:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case GETDELEGATIONTOKEN:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case GETHOMEDIRECTORY:
+      {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case GETACLSTATUS: {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case GETXATTRS: {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+      case LISTXATTRS: {
+        // @TODO: Implement me!
+        return notYetImplemented();
+      }
+//      case CHECKACCESS: {
+//        // @TODO: Implement me!
+//        return notYetImplemented();
+//      }
+      default: {
+         throw new UnsupportedOperationException(op + " is not supported");
+      }
+    }
   }
 
+  public Response notYetImplemented() {
+    throw new UnsupportedOperationException("Not yet supported");
+  }
 }

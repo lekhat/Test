@@ -18,13 +18,16 @@
  */
 package com.microsoft.cisl.skute.filesystem;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Files;
 
 public class LocalSkuteFileSystem implements SkuteFileSystem {
-
+  private static final Log LOG = LogFactory.getLog(LocalSkuteFileSystem.class);
   final Path root;
 
   public LocalSkuteFileSystem(Path root) {
@@ -43,7 +46,9 @@ public class LocalSkuteFileSystem implements SkuteFileSystem {
     try {
       Files.createDirectory(result);
     } catch (IOException e) {
-      System.err.println(e);
+      if (LOG.isWarnEnabled()) {
+        LOG.warn(String.format("Exception while processing mkdirs (path = %s, permission = %04d) from %s", path, permission));
+      }
       return SkuteResult.ERR;
     }
     return SkuteResult.OK;
