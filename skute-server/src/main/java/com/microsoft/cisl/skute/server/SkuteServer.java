@@ -18,6 +18,7 @@
  */
 package com.microsoft.cisl.skute.server;
 
+import com.microsoft.cisl.skute.SkuteHttpServer;
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
 import com.microsoft.cisl.skute.filesystem.SkuteResult;
 import org.apache.commons.logging.Log;
@@ -46,6 +47,11 @@ public class SkuteServer {
   public static final String SKUTE_FILESYSTEM_ATTRIBUTE = "skute.filesystem";
 
   public static final int DEFAULT_PORT = 7552;
+
+  public static void main(String[] args) throws Exception {
+    Package pckge = SkuteServer.class.getPackage();
+    SkuteHttpServer.run(args, pckge);
+  }
 
   private SkuteFileSystem getFileSystem() {
     return (SkuteFileSystem)context.getAttribute(SKUTE_FILESYSTEM_ATTRIBUTE);

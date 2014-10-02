@@ -1,1 +1,1 @@
-include 'skute-server', 'skute-client', 'skute-filesystem', 'skute-hadoop-filesystem', 'skute-webhdfs-test'
+include 'skute-server', 'skute-streamer', 'skute-core', 'skute-client', 'skute-filesystem', 'skute-hadoop-filesystem', 'skute-webhdfs-test'

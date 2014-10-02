@@ -27,7 +27,64 @@ subprojects {
 project(":skute-server") {
   apply plugin: 'war'
   apply plugin: 'jetty'
+  apply plugin: 'application'
 
+  dependencies {
+    compile project(':skute-core')
+    compile project(':skute-filesystem')
+
+    compile("org.apache.hadoop:hadoop-common:$hadoopVersion") {
+      exclude group: 'com.sun.jersey'
+    }
+    compile("org.apache.hadoop:hadoop-hdfs:$hadoopVersion") {
+      exclude group: 'com.sun.jersey'
+    }
+
+    compile("commons-cli:commons-cli:$commonsCliVersion")
+    compile("org.glassfish.jersey.containers:jersey-container-servlet-core:$jerseyVersion")
+    compile("org.glassfish.jersey.core:jersey-client:$jerseyVersion")
+    compile("org.glassfish.jersey.core:jersey-server:$jerseyVersion")
+
+    compile("org.eclipse.jetty:jetty-server:$jettyVersion")
+    compile("org.eclipse.jetty:jetty-servlet:$jettyVersion")
+
+    testCompile("com.jayway.restassured:rest-assured:$restAssuredVersion")
+    testCompile("org.glassfish.jersey.containers:jersey-container-jdk-http:$jerseyVersion")
+    testCompile("org.mockito:mockito-all:$mockitoVersion")
+  }
+}
+
+project(":skute-streamer") {
+  apply plugin: 'war'
+  apply plugin: 'jetty'
+  apply plugin: 'application'
+
+  dependencies {
+    compile project(':skute-core')
+    compile project(':skute-filesystem')
+
+    compile("org.apache.hadoop:hadoop-common:$hadoopVersion") {
+      exclude group: 'com.sun.jersey'
+    }
+    compile("org.apache.hadoop:hadoop-hdfs:$hadoopVersion") {
+      exclude group: 'com.sun.jersey'
+    }
+
+    compile("commons-cli:commons-cli:$commonsCliVersion")
+    compile("org.glassfish.jersey.containers:jersey-container-servlet-core:$jerseyVersion")
+    compile("org.glassfish.jersey.core:jersey-client:$jerseyVersion")
+    compile("org.glassfish.jersey.core:jersey-server:$jerseyVersion")
+
+    compile("org.eclipse.jetty:jetty-server:$jettyVersion")
+    compile("org.eclipse.jetty:jetty-servlet:$jettyVersion")
+
+    testCompile("com.jayway.restassured:rest-assured:$restAssuredVersion")
+    testCompile("org.glassfish.jersey.containers:jersey-container-jdk-http:$jerseyVersion")
+    testCompile("org.mockito:mockito-all:$mockitoVersion")
+  }
+}
+
+project(":skute-core") {
   dependencies {
     compile project(':skute-filesystem')
 

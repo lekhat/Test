@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.microsoft.cisl.skute.server;
+package com.microsoft.cisl.skute;
 
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystemFactory;
@@ -30,8 +30,33 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import java.util.Properties;
 
 public class SkuteHttpServer {
-  public static void main(String[] args) throws Exception {
-    // TODO: Go back and make this property file based.
+  public static final String SKUTE_FILESYSTEM_ATTRIBUTE = "skute.filesystem";
+
+  public static void run(String[] args, Package pckge) throws Exception {
+
+
+    SkuteHttpServer shs = new SkuteHttpServer(args, pckge);
+
+    shs.start();
+
+    Thread.sleep(1000 * 1000);
+
+    shs.stop();
+  }
+
+  private static SkuteFileSystem getSkuteFileSystem(CommandLine commandLine) throws Exception {
+    if(!commandLine.hasOption("skutefsFactory")) {
+      throw new IllegalArgumentException("Must specify skutefsFactory");
+    }
+
+    String factoryString = commandLine.getOptionValue("skutefsFactory");
+    SkuteFileSystemFactory factory = Utils.instantiateObject(factoryString);
+    return factory.getSkuteFileSystem(new Properties());
+  }
+
+  private final Server server;
+
+  public SkuteHttpServer(String [] args, Package serverPackage) {
     // Handle common line options
     Option portOption = OptionBuilder
         .withArgName("port")
@@ -58,7 +83,7 @@ public class SkuteHttpServer {
 
     CommandLineParser parser = new BasicParser();
     CommandLine commandLine = parser.parse(options, args);
-    int port = SkuteServer.DEFAULT_PORT;
+    int port = 7552; //@TODO: Make reflection based
     if(commandLine.hasOption("port")) {
       port = Integer.parseInt(commandLine.getOptionValue("port"));
     }
@@ -71,37 +96,15 @@ public class SkuteHttpServer {
 
     SkuteFileSystem fs = getSkuteFileSystem(commandLine);
 
-    SkuteHttpServer shp = new SkuteHttpServer(port, fs);
-
-    shp.start();
-
-    Thread.sleep(sleepSecs * 1000);
-
-    shp.stop();
-  }
-
-  private static SkuteFileSystem getSkuteFileSystem(CommandLine commandLine) throws Exception {
-    if(!commandLine.hasOption("skutefsFactory")) {
-      throw new IllegalArgumentException("Must specify skutefsFactory");
-    }
-
-    String factoryString = commandLine.getOptionValue("skutefsFactory");
-    SkuteFileSystemFactory factory = Utils.instantiateObject(factoryString);
-    return factory.getSkuteFileSystem(new Properties());
-  }
-
-  private final Server server;
-
-  public SkuteHttpServer(int port, SkuteFileSystem filesystem) {
     server = new Server(port);
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     context.setContextPath("/");
 
-    context.setAttribute(SkuteServer.SKUTE_FILESYSTEM_ATTRIBUTE, filesystem);
+    context.setAttribute(SKUTE_FILESYSTEM_ATTRIBUTE, filesystem);
 
     server.setHandler(context);
     ServletHolder h = new ServletHolder(new ServletContainer());
-    h.setInitParameter(ServerProperties.PROVIDER_PACKAGES, SkuteServer.class.getPackage().toString());
+    h.setInitParameter(ServerProperties.PROVIDER_PACKAGES, serverPackage.toString());
     h.setInitOrder(1);
     context.addServlet(h, "/webhdfs/v1/*");
     server.setDumpAfterStart(false);
