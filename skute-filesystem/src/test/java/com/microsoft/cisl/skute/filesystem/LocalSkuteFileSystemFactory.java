@@ -19,8 +19,8 @@
 package com.microsoft.cisl.skute.filesystem;
 
 import java.nio.file.FileSystems;
-import java.util.Properties;
 import java.nio.file.Path;
+import java.util.Properties;
 
 public class LocalSkuteFileSystemFactory implements SkuteFileSystemFactory {
   public static final String ROOT = "localskutefilesystem.root";

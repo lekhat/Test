@@ -1,6 +1,7 @@
 package com.microsoft.cisl.skute.server;
 
 import com.microsoft.cisl.skute.SkuteHttpServer;
+import com.microsoft.cisl.skute.SkuteHttpServerBuilder;
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
 import com.microsoft.cisl.skute.filesystem.SkuteResult;
 import org.apache.commons.logging.Log;
@@ -11,9 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static com.jayway.restassured.RestAssured.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class SkuteServerTest {
   private static final Log LOG = LogFactory.getLog(SkuteServerTest.class);
@@ -32,7 +31,12 @@ public class SkuteServerTest {
         .thenReturn(SkuteResult.OK)
         .getMock();
 
-    SkuteHttpServer shs = new SkuteHttpServer(SkuteServer.DEFAULT_PORT, sfs);
+
+    SkuteHttpServer shs = new SkuteHttpServerBuilder()
+        .setPort(SkuteServer.DEFAULT_PORT)
+        .setServerPackage(SkuteServer.class.getPackage())
+        .setSkuteFileSystem(sfs)
+        .build();
 
     LOG.info("SkuteHttpServer = " + shs);
 

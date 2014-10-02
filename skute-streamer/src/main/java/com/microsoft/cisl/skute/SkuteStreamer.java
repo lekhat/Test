@@ -40,8 +40,9 @@ public class SkuteStreamer {
   public static final int DEFAULT_PORT = 7552;
 
   public static void main(String[] args) throws Exception {
-    Package pckge = SkuteStreamer.class.getPackage();
-    SkuteHttpServer.run(args, pckge);
+    Package pckg = SkuteStreamer.class.getPackage();
+
+    Utils.runServer(pckg, args);
   }
 
   private SkuteFileSystem getFileSystem() {

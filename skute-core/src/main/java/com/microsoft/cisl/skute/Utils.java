@@ -18,6 +18,12 @@
  */
 package com.microsoft.cisl.skute;
 
+import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
+import com.microsoft.cisl.skute.filesystem.SkuteFileSystemFactory;
+
+import java.util.Map;
+import java.util.Properties;
+
 public class Utils {
   @SuppressWarnings("unchecked")
   static<T> T instantiateObject(String classname) throws Exception {
@@ -28,5 +34,34 @@ public class Utils {
     } catch (ClassNotFoundException e) {
       throw new Exception(e);
     }
+  }
+
+  public static SkuteFileSystem getSkuteFileSystem(String factoryString) throws Exception {
+    if(factoryString == null) {
+      throw new IllegalArgumentException("Must specify skutefsFactory");
+    }
+
+    SkuteFileSystemFactory factory = Utils.instantiateObject(factoryString);
+    return factory.getSkuteFileSystem(new Properties());
+  }
+
+  public static void runServer(Package pckg, String [] args) throws Exception {
+    Map<String, String> options = OptionsExtractor.buildOptions(args);
+
+    int sleepSecs = Integer.valueOf(options.get("sleepsecs"));
+    SkuteFileSystem fs = Utils.getSkuteFileSystem(options.get("skutefsFactory"));
+    int port = Integer.valueOf(options.get("port"));
+
+    SkuteHttpServer shs = new SkuteHttpServerBuilder()
+        .setPort(port)
+        .setServerPackage(pckg)
+        .setSkuteFileSystem(fs)
+        .build();
+
+    shs.start();
+
+    Thread.sleep(sleepSecs);
+
+    shs.stop();
   }
 }

@@ -1,16 +1,17 @@
 
 package com.microsoft.cisl.generated.wadl.client;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.uri.UriTemplate;
+
 import javax.annotation.Generated;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.uri.UriTemplate;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 @Generated(value = {
     "wadl|file:/Users/jahoman/work/webby/src/main/resources/wadl/webhdfs.wadl"

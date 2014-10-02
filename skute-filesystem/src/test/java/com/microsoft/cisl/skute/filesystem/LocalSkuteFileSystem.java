@@ -23,8 +23,8 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class LocalSkuteFileSystem implements SkuteFileSystem {
   private static final Log LOG = LogFactory.getLog(LocalSkuteFileSystem.class);
