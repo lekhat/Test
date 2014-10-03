@@ -25,6 +25,8 @@ subprojects {
 }
 
 project(":skute-server") {
+  description "Serve metadata requests over REST and redirect data requests to Skute Streamers"
+
   apply plugin: 'war'
   apply plugin: 'jetty'
   apply plugin: 'application'
@@ -55,6 +57,7 @@ project(":skute-server") {
 }
 
 project(":skute-streamer") {
+  description "Server non-metadata requests to clients."
   apply plugin: 'war'
   apply plugin: 'jetty'
   apply plugin: 'application'
@@ -85,6 +88,8 @@ project(":skute-streamer") {
 }
 
 project(":skute-core") {
+  description "Base classes useful to all Skute components."
+
   dependencies {
     compile project(':skute-filesystem')
 
@@ -110,12 +115,16 @@ project(":skute-core") {
 }
 
 project(":skute-filesystem") {
+  description: "Filesystem abstract used by SkuteStreamer and SkuteServer."
+
   dependencies {
     compile("com.codahale.metrics:metrics-core:$metricsVersion")
   }
 }
 
 project(":skute-hadoop-filesystem") {
+  description: "Implementation of Skute filesystem backed by org.apache.hadoop.FileSystem."
+
   dependencies {
     compile project(':skute-filesystem')
 
@@ -130,6 +139,8 @@ project(":skute-hadoop-filesystem") {
 }
 
 project(":skute-client") {
+  description: "Tools and examples of clients that can consume from Skute."
+
   dependencies {
     compile("org.apache.hadoop:hadoop-common:$hadoopVersion")
     compile("org.apache.hadoop:hadoop-hdfs:$hadoopVersion")
@@ -185,6 +196,7 @@ project(":skute-client") {
 }
 
 project(":skute-webhdfs-test") {
+  description "Start a Skute Server and Streamer backed up an Hadoop filesystem."
   dependencies {
     compile project(':skute-filesystem')
     compile project(':skute-server')
