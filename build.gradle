@@ -110,6 +110,9 @@ project(":skute-core") {
 }
 
 project(":skute-filesystem") {
+  dependencies {
+    compile("com.codahale.metrics:metrics-core:$metricsVersion")
+  }
 }
 
 project(":skute-hadoop-filesystem") {

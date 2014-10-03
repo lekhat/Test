@@ -18,44 +18,58 @@
  */
 package com.microsoft.cisl.skute.filesystem;
 
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.MetricRegistry;
 
-import com.microsoft.cisl.skute.filesystem.metrics.Metrics;
+import static com.codahale.metrics.MetricRegistry.name;
 
 public class MetricsSkuteFileSystem implements SkuteFileSystem {
 
-  private final Metrics metrics;
+  static final MetricRegistry metrics = new MetricRegistry();
+
   private final SkuteFileSystem fs;
-
-  public MetricsSkuteFileSystem(Metrics metrics, SkuteFileSystem skuteFileSystem) {
-    this.metrics = metrics;
-    this.fs = skuteFileSystem;
-
-  }
 
   public static final String START_COUNT = "start_count";
   public static final String STOP_COUNT = "stop_count";
   public static final String MKDIR_COUNT = "mkdir_count";
   public static final String MKDIR_SUCCEED_COUNT = "mkdir_succeed_count";
 
+  private final Counter startCount;
+  private final Counter stopCount;
+  private final Counter mkdirCount;
+  private final Counter mkdirSucceedCount;
+
+  public MetricsSkuteFileSystem(SkuteFileSystem skuteFileSystem) {
+    this.fs = skuteFileSystem;
+
+    startCount = getCounter(START_COUNT);
+    stopCount = getCounter(STOP_COUNT);
+    mkdirCount = getCounter(MKDIR_COUNT);
+    mkdirSucceedCount = getCounter(MKDIR_SUCCEED_COUNT);
+  }
+
+  private Counter getCounter(String name) {
+    return metrics.counter(name(MetricsSkuteFileSystem.class, fs.toString() + "-" + name));
+  }
 
   @Override
   public void start() throws Exception {
-    metrics.incCounter(START_COUNT);
+    startCount.inc();
     fs.start();
   }
 
   @Override
   public void stop() throws Exception {
-    metrics.incCounter(STOP_COUNT);
+    stopCount.inc();
     fs.stop();
   }
 
   @Override
   public SkuteResult mkdir(String path, short permission) throws Exception {
-    metrics.incCounter(MKDIR_COUNT);
+    mkdirCount.inc();
     SkuteResult result = fs.mkdir(path, permission);
 
-    if(result == SkuteResult.OK) metrics.incCounter(MKDIR_SUCCEED_COUNT);
+    if(result == SkuteResult.OK) mkdirSucceedCount.inc();
 
     return result;
   }
