@@ -21,20 +21,7 @@ package com.microsoft.cisl.skute;
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.CreateFlag;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.MD5MD5CRC32FileChecksum;
-import org.apache.hadoop.fs.permission.FsPermission;
-import org.apache.hadoop.hdfs.DFSClient;
-import org.apache.hadoop.hdfs.client.HdfsDataInputStream;
-import org.apache.hadoop.hdfs.server.datanode.DataNode;
-import org.apache.hadoop.hdfs.server.datanode.web.resources.OpenEntity;
-import org.apache.hadoop.hdfs.web.JsonUtil;
-import org.apache.hadoop.hdfs.web.SWebHdfsFileSystem;
-import org.apache.hadoop.hdfs.web.WebHdfsFileSystem;
 import org.apache.hadoop.hdfs.web.resources.*;
-import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.security.UserGroupInformation;
 
 import javax.servlet.ServletContext;
@@ -44,10 +31,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.PrivilegedExceptionAction;
-import java.util.EnumSet;
 
 public class SkuteStreamer {
   private static final Log LOG = LogFactory.getLog(SkuteStreamer.class);
@@ -130,7 +113,7 @@ public class SkuteStreamer {
       ) throws IOException, InterruptedException {
 
     return put(in, path.getAbsolutePath(), op,
-                permission, overwrite, bufferSize, replication, blockSize);
+        permission, overwrite, bufferSize, replication, blockSize);
   }
 
   private Response put(
@@ -143,7 +126,6 @@ public class SkuteStreamer {
       final ReplicationParam replication,
       final BlockSizeParam blockSize
       ) throws IOException {
-    final DataNode datanode = (DataNode)context.getAttribute("datanode");
 
     switch(op.getValue()) {
     case CREATE:
