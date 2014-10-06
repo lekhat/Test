@@ -28,8 +28,6 @@ import org.glassfish.jersey.servlet.ServletContainer;
 public class SkuteHttpServer {
   public static final String SKUTE_FILESYSTEM_ATTRIBUTE = "skute.filesystem";
 
-
-
   private final Server server;
 
   protected SkuteHttpServer(int port, Package serverPackage, SkuteFileSystem fs) throws Exception {
