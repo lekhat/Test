@@ -40,7 +40,6 @@ public class SkuteHttpServer {
     context.setContextPath("/");
 
     context.setAttribute(SKUTE_FILESYSTEM_ATTRIBUTE, fs);
-    context.setAttribute("ugi", new UserGroupInformationPlaceHolder("foo"));
     server.setHandler(context);
 
     ServletHolder h = new ServletHolder(ServletContainer.class);
