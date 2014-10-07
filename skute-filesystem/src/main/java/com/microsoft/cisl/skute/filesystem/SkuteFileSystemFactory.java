@@ -18,8 +18,8 @@
  */
 package com.microsoft.cisl.skute.filesystem;
 
-import java.util.Properties;
+import com.typesafe.config.Config;
 
 public interface SkuteFileSystemFactory {
-  public SkuteFileSystem getSkuteFileSystem(Properties properties) throws Exception;
+  public SkuteFileSystem getSkuteFileSystem(Config config) throws Exception;
 }

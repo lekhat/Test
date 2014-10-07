@@ -22,6 +22,7 @@ subprojects {
     compile("com.typesafe:config:$configVersion")
     compile("commons-logging:commons-logging:$commonsLoggingVersion")
     testCompile("junit:junit:$junitVersion")
+    testCompile("org.mockito:mockito-all:$mockitoVersion")
   }
 }
 
@@ -53,7 +54,6 @@ project(":skute-server") {
 
     testCompile("com.jayway.restassured:rest-assured:$restAssuredVersion")
     testCompile("org.glassfish.jersey.containers:jersey-container-jdk-http:$jerseyVersion")
-    testCompile("org.mockito:mockito-all:$mockitoVersion")
   }
 }
 

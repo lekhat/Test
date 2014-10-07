@@ -25,8 +25,6 @@ import com.typesafe.config.ConfigFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.Properties;
-
 public class Utils {
   private static final Log LOG = LogFactory.getLog(Utils.class);
 
@@ -48,7 +46,7 @@ public class Utils {
     }
 
     SkuteFileSystemFactory factory = Utils.instantiateObject(factoryString);
-    return factory.getSkuteFileSystem(new Properties());
+    return factory.getSkuteFileSystem(config);
   }
 
   public static void runServer(Package pckg, String [] args) throws Exception {

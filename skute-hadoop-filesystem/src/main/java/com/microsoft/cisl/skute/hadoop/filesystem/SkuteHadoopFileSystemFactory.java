@@ -20,24 +20,24 @@ package com.microsoft.cisl.skute.hadoop.filesystem;
 
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystemFactory;
+import com.typesafe.config.Config;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Properties;
 
 public class SkuteHadoopFileSystemFactory implements SkuteFileSystemFactory {
   final static public String URI_KEY = "oah.filesystem.uri";
   @Override
-  public SkuteFileSystem getSkuteFileSystem(Properties properties) throws Exception {
+  public SkuteFileSystem getSkuteFileSystem(Config config) throws Exception {
     try {
-    if(!properties.containsKey(URI_KEY)) {
-      throw new IllegalArgumentException("No Hadoop filesystem URI");
-    }
 
+      if(config.getString(URI_KEY) == null) {
+        throw new IllegalArgumentException("No Hadoop filesystem URI");
+      }
 
-      URI uri = new URI(properties.getProperty(URI_KEY));
+      URI uri = new URI(config.getString(URI_KEY));
 
       Configuration conf = new Configuration();
       FileSystem fs = FileSystem.get(uri, conf);

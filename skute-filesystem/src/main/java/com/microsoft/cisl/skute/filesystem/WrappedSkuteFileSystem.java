@@ -24,6 +24,4 @@ public abstract class WrappedSkuteFileSystem implements SkuteFileSystem {
   public WrappedSkuteFileSystem(SkuteFileSystem wrapped) {
     this.wrapped = wrapped;
   }
-
-
 }

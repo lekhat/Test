@@ -22,7 +22,6 @@ import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
 
 import java.util.EnumMap;
-import java.util.Map;
 
 import static com.codahale.metrics.MetricRegistry.name;
 

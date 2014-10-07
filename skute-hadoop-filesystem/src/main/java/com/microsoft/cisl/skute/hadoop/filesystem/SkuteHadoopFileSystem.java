@@ -25,8 +25,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.permission.FsPermission;
 
-import static com.microsoft.cisl.skute.filesystem.SkuteResult.OK;
 import static com.microsoft.cisl.skute.filesystem.SkuteResult.ERR;
+import static com.microsoft.cisl.skute.filesystem.SkuteResult.OK;
 
 /**
  * An instance of a SkuteFileSystem backed by an org.apache.hadoop.FileSystem.
