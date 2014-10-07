@@ -51,5 +51,6 @@ public class TestSkuteWebHDFSTest {
     FileSystem webhdfsClient = FileSystem.get(uri, hadoopConfiguration);
 
     assertTrue(webhdfsClient.mkdirs(new Path("/howdy")));
+    assertTrue(webhdfsClient.delete(new Path("/howdy"), false));
   }
 }
