@@ -57,7 +57,7 @@ public class MetricsSkuteFileSystem implements SkuteFileSystem {
     }
   }
 
-  private final Map<CountersEnum, Counter> counters = new EnumMap(CountersEnum.class);
+  private final EnumMap<CountersEnum, Counter> counters = new EnumMap(CountersEnum.class);
 
   public MetricsSkuteFileSystem(SkuteFileSystem skuteFileSystem) {
     this.fs = skuteFileSystem;

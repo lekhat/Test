@@ -19,6 +19,7 @@ subprojects {
   apply plugin: 'java'
 
   dependencies {
+    compile("com.typesafe:config:$configVersion")
     compile("commons-logging:commons-logging:$commonsLoggingVersion")
     testCompile("junit:junit:$junitVersion")
   }

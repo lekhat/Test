@@ -20,11 +20,16 @@ package com.microsoft.cisl.skute;
 
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystemFactory;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-import java.util.Map;
 import java.util.Properties;
 
 public class Utils {
+  private static final Log LOG = LogFactory.getLog(Utils.class);
+
   @SuppressWarnings("unchecked")
   static<T> T instantiateObject(String classname) throws Exception {
     try {
@@ -36,9 +41,10 @@ public class Utils {
     }
   }
 
-  public static SkuteFileSystem getSkuteFileSystem(String factoryString) throws Exception {
+  public static SkuteFileSystem getSkuteFileSystem(Config config) throws Exception {
+    String factoryString = config.getString("skute.fs.factory");
     if(factoryString == null) {
-      throw new IllegalArgumentException("Must specify skutefsFactory");
+      throw new IllegalArgumentException("Must specify Skute filesystem factory (skute.fs.factory)");
     }
 
     SkuteFileSystemFactory factory = Utils.instantiateObject(factoryString);
@@ -46,11 +52,23 @@ public class Utils {
   }
 
   public static void runServer(Package pckg, String [] args) throws Exception {
-    Map<String, String> options = OptionsExtractor.buildOptions(args);
+    Config conf = ConfigFactory.load();
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Conf = " + conf.toString());
+    }
 
-    int sleepSecs = Integer.valueOf(options.get("sleepsecs"));
-    SkuteFileSystem fs = Utils.getSkuteFileSystem(options.get("skutefsFactory"));
-    int port = Integer.valueOf(options.get("port"));
+    SkuteFileSystem fs = Utils.getSkuteFileSystem(conf);
+
+    if (LOG.isInfoEnabled()) {
+      LOG.info("Starting with Skute Filesystem = " + fs);
+    }
+
+    int port = conf.getInt("skute.http.server.port");
+
+    if (LOG.isInfoEnabled()) {
+      LOG.info("Skute HTTP server port = " + port);
+    }
+
 
     SkuteHttpServer shs = new SkuteHttpServerBuilder()
         .setPort(port)
@@ -58,10 +76,25 @@ public class Utils {
         .setSkuteFileSystem(fs)
         .build();
 
+    if (LOG.isInfoEnabled()) {
+      LOG.info("Starting Skute HTTP server.");
+    }
+
     shs.start();
 
-    Thread.sleep(sleepSecs);
+    try {
+      if (LOG.isInfoEnabled()) {
+        LOG.info("Putting main thread to sleep. Nighty night.");
+      }
 
-    shs.stop();
+      Thread.sleep(Long.MAX_VALUE);
+    } catch(InterruptedException ie) {
+      if (LOG.isInfoEnabled()) {
+        LOG.info("Caught interrupted exception. Exiting.", ie);
+        shs.stop();
+        return;
+      }
+    }
+
   }
 }
