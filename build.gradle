@@ -45,15 +45,12 @@ project(":skute-server") {
     }
 
     compile("commons-cli:commons-cli:$commonsCliVersion")
-    compile("org.glassfish.jersey.containers:jersey-container-servlet-core:$jerseyVersion")
-    compile("org.glassfish.jersey.core:jersey-client:$jerseyVersion")
-    compile("org.glassfish.jersey.core:jersey-server:$jerseyVersion")
+    compile("com.sun.jersey:jersey-client:$jerseyVersion")
+    compile("com.sun.jersey:jersey-server:$jerseyVersion")
 
-    compile("org.eclipse.jetty:jetty-server:$jettyVersion")
-    compile("org.eclipse.jetty:jetty-servlet:$jettyVersion")
+    compile("org.mortbay.jetty:jetty:$jettyVersion")
 
     testCompile("com.jayway.restassured:rest-assured:$restAssuredVersion")
-    testCompile("org.glassfish.jersey.containers:jersey-container-jdk-http:$jerseyVersion")
   }
 
   mainClassName = "com.microsoft.cisl.skute.server.SkuteServer"
@@ -77,15 +74,13 @@ project(":skute-streamer") {
     }
 
     compile("commons-cli:commons-cli:$commonsCliVersion")
-    compile("org.glassfish.jersey.containers:jersey-container-servlet-core:$jerseyVersion")
-    compile("org.glassfish.jersey.core:jersey-client:$jerseyVersion")
-    compile("org.glassfish.jersey.core:jersey-server:$jerseyVersion")
+    compile("com.sun.jersey:jersey-client:$jerseyVersion")
+    compile("com.sun.jersey:jersey-server:$jerseyVersion")
 
-    compile("org.eclipse.jetty:jetty-server:$jettyVersion")
-    compile("org.eclipse.jetty:jetty-servlet:$jettyVersion")
+    compile("org.mortbay.jetty:jetty:$jettyVersion")
 
     testCompile("com.jayway.restassured:rest-assured:$restAssuredVersion")
-    testCompile("org.glassfish.jersey.containers:jersey-container-jdk-http:$jerseyVersion")
+    testCompile("com.sun.jersey:jersey-container-jdk-http:$jerseyVersion")
     testCompile("org.mockito:mockito-all:$mockitoVersion")
   }
 
@@ -98,23 +93,17 @@ project(":skute-core") {
   dependencies {
     compile project(':skute-filesystem')
 
-    compile("org.apache.hadoop:hadoop-common:$hadoopVersion") {
-      exclude group: 'com.sun.jersey'
-    }
-    compile("org.apache.hadoop:hadoop-hdfs:$hadoopVersion") {
-      exclude group: 'com.sun.jersey'
-    }
+    compile("org.apache.hadoop:hadoop-common:$hadoopVersion")
+    compile("org.apache.hadoop:hadoop-hdfs:$hadoopVersion")
 
     compile("commons-cli:commons-cli:$commonsCliVersion")
-    compile("org.glassfish.jersey.containers:jersey-container-servlet-core:$jerseyVersion")
-    compile("org.glassfish.jersey.core:jersey-client:$jerseyVersion")
-    compile("org.glassfish.jersey.core:jersey-server:$jerseyVersion")
+    compile("com.sun.jersey:jersey-client:$jerseyVersion")
+    compile("com.sun.jersey:jersey-server:$jerseyVersion")
 
-    compile("org.eclipse.jetty:jetty-server:$jettyVersion")
-    compile("org.eclipse.jetty:jetty-servlet:$jettyVersion")
+    compile("org.mortbay.jetty:jetty:$jettyVersion")
 
     testCompile("com.jayway.restassured:rest-assured:$restAssuredVersion")
-    testCompile("org.glassfish.jersey.containers:jersey-container-jdk-http:$jerseyVersion")
+    testCompile("com.sun.jersey:jersey-container-jdk-http:$jerseyVersion")
     testCompile("org.mockito:mockito-all:$mockitoVersion")
   }
 }
@@ -133,13 +122,9 @@ project(":skute-hadoop-filesystem") {
   dependencies {
     compile project(':skute-filesystem')
 
-    compile("org.apache.hadoop:hadoop-common:$hadoopVersion")// {
- //     exclude group: 'com.sun.jersey'
-//    }
+    compile("org.apache.hadoop:hadoop-common:$hadoopVersion")
 
-    compile("org.apache.hadoop:hadoop-minicluster:$hadoopVersion")// {
-   //   exclude group: 'com.sun.jersey'
-//    }
+    compile("org.apache.hadoop:hadoop-minicluster:$hadoopVersion")
   }
 }
 
@@ -174,7 +159,6 @@ project(":skute-client") {
   task wadl2java(dependsOn: 'compileJava') << {
     description 'Generate a REST client from the WADL specification obtained through getWADL'
     if(!file("${projectDir}/src/main/resources/wadl/webhdfs.wadl").exists()) {
-      println "hi!"
       getWADL.exec()
     }
 

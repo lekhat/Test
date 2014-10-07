@@ -18,14 +18,16 @@
  */
 package com.microsoft.cisl.skute.server;
 
+import com.microsoft.cisl.skute.UserGroupInformationPlaceHolder;
 import com.microsoft.cisl.skute.Utils;
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
 import com.microsoft.cisl.skute.filesystem.SkuteResult;
+import com.sun.jersey.spi.container.ResourceFilters;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hdfs.web.JsonUtil;
+import org.apache.hadoop.hdfs.web.ParamFilter;
 import org.apache.hadoop.hdfs.web.resources.*;
-import org.apache.hadoop.security.UserGroupInformation;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
@@ -36,7 +38,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Path("")
-// @ResourceFilters(ParamFilter.class)  <-- Not in Jersey 2.  Need to re-write as Dynamic Feature: http://stackoverflow.com/questions/20946815/how-can-i-get-resource-annotations-in-a-jersey-2-4-filter
+@ResourceFilters(ParamFilter.class)
 public class SkuteServer {
   private static final Log LOG = LogFactory.getLog(SkuteServer.class);
 
@@ -63,7 +65,7 @@ public class SkuteServer {
   @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
   public Response deleteRoot(
-      @Context final UserGroupInformation ugi,
+      @Context final UserGroupInformationPlaceHolder ugi,
       @QueryParam(DelegationParam.NAME) @DefaultValue(DelegationParam.DEFAULT)
           final DelegationParam delegation,
       @QueryParam(UserParam.NAME) @DefaultValue(UserParam.DEFAULT)
@@ -86,7 +88,7 @@ public class SkuteServer {
   @Path("{" + UriFsPathParam.NAME + ":.*}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response delete(
-      @Context final UserGroupInformation ugi,
+      @Context final UserGroupInformationPlaceHolder ugi,
       @QueryParam(DelegationParam.NAME) @DefaultValue(DelegationParam.DEFAULT)
           final DelegationParam delegation,
       @QueryParam(UserParam.NAME) @DefaultValue(UserParam.DEFAULT)
@@ -111,7 +113,7 @@ public class SkuteServer {
   @Consumes({"*/*"})
   @Produces({MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON})
   public Response putRoot(
-      @Context final UserGroupInformation ugi,
+      @Context final UserGroupInformationPlaceHolder ugi,
       @QueryParam(DelegationParam.NAME) @DefaultValue(DelegationParam.DEFAULT)
           final DelegationParam delegation,
       @QueryParam(UserParam.NAME) @DefaultValue(UserParam.DEFAULT)
@@ -172,7 +174,7 @@ public class SkuteServer {
   @Consumes({"*/*"})
   @Produces({MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON})
   public Response put(
-      @Context final UserGroupInformation ugi,
+      @Context final UserGroupInformationPlaceHolder ugi,
       @QueryParam(DelegationParam.NAME) @DefaultValue(DelegationParam.DEFAULT)
           final DelegationParam delegation,
       @QueryParam(UserParam.NAME) @DefaultValue(UserParam.DEFAULT)
@@ -341,7 +343,7 @@ public class SkuteServer {
   @Consumes({"*/*"})
   @Produces({MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON})
   public Response postRoot(
-      @Context final UserGroupInformation ugi,
+      @Context final UserGroupInformationPlaceHolder ugi,
       @QueryParam(DelegationParam.NAME) @DefaultValue(DelegationParam.DEFAULT)
           final DelegationParam delegation,
       @QueryParam(UserParam.NAME) @DefaultValue(UserParam.DEFAULT)
@@ -364,7 +366,7 @@ public class SkuteServer {
   @Consumes({"*/*"})
   @Produces({MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON})
   public Response post(
-      @Context final UserGroupInformation ugi,
+      @Context final UserGroupInformationPlaceHolder ugi,
       @QueryParam(DelegationParam.NAME) @DefaultValue(DelegationParam.DEFAULT)
           final DelegationParam delegation,
       @QueryParam(UserParam.NAME) @DefaultValue(UserParam.DEFAULT)
@@ -400,7 +402,7 @@ public class SkuteServer {
   @Path("/")
   @Produces({MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON})
   public Response getRoot(
-      @Context final UserGroupInformation ugi,
+      @Context final UserGroupInformationPlaceHolder ugi,
       @QueryParam(DelegationParam.NAME) @DefaultValue(DelegationParam.DEFAULT)
           final DelegationParam delegation,
       @QueryParam(UserParam.NAME) @DefaultValue(UserParam.DEFAULT)
@@ -431,7 +433,7 @@ public class SkuteServer {
   @Path("{" + UriFsPathParam.NAME + ":.*}")
   @Produces({MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON})
   public Response get(
-      @Context final UserGroupInformation ugi,
+      @Context final UserGroupInformationPlaceHolder ugi,
       @QueryParam(DelegationParam.NAME) @DefaultValue(DelegationParam.DEFAULT)
           final DelegationParam delegation,
       @QueryParam(UserParam.NAME) @DefaultValue(UserParam.DEFAULT)

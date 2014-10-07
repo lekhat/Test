@@ -19,30 +19,40 @@
 package com.microsoft.cisl.skute;
 
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.glassfish.jersey.server.ServerProperties;
-import org.glassfish.jersey.servlet.ServletContainer;
+import com.sun.jersey.spi.container.servlet.ServletContainer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.servlet.Context;
+import org.mortbay.jetty.servlet.ServletHolder;
+import static com.sun.jersey.api.core.PackagesResourceConfig.PROPERTY_PACKAGES;
 
 public class SkuteHttpServer {
+  private static final Log LOG = LogFactory.getLog(SkuteHttpServer.class);
+
   public static final String SKUTE_FILESYSTEM_ATTRIBUTE = "skute.filesystem";
 
   private final Server server;
 
   protected SkuteHttpServer(int port, Package serverPackage, SkuteFileSystem fs) throws Exception {
     server = new Server(port);
-    ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+    Context context = new Context(Context.SESSIONS);
     context.setContextPath("/");
 
     context.setAttribute(SKUTE_FILESYSTEM_ATTRIBUTE, fs);
-
+    context.setAttribute("ugi", new UserGroupInformationPlaceHolder("foo"));
     server.setHandler(context);
-    ServletHolder h = new ServletHolder(new ServletContainer());
-    h.setInitParameter(ServerProperties.PROVIDER_PACKAGES, serverPackage.toString());
+
+    ServletHolder h = new ServletHolder(ServletContainer.class);
+
+    h.setInitParameter(PROPERTY_PACKAGES, serverPackage.toString());
     h.setInitOrder(1);
+
     context.addServlet(h, "/webhdfs/v1/*");
-    server.setDumpAfterStart(false);
+    if (LOG.isInfoEnabled()) {
+      LOG.info("Server = " + server);
+    }
+
   }
 
   public void start() throws Exception {
