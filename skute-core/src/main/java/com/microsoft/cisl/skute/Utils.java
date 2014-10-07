@@ -89,6 +89,8 @@ public class Utils {
     } catch(InterruptedException ie) {
       if (LOG.isInfoEnabled()) {
         LOG.info("Caught interrupted exception. Exiting.", ie);
+        fs.stop();
+
         shs.stop();
         return;
       }

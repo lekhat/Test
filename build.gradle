@@ -55,6 +55,8 @@ project(":skute-server") {
     testCompile("com.jayway.restassured:rest-assured:$restAssuredVersion")
     testCompile("org.glassfish.jersey.containers:jersey-container-jdk-http:$jerseyVersion")
   }
+
+  mainClassName = "com.microsoft.cisl.skute.server.SkuteServer"
 }
 
 project(":skute-streamer") {
@@ -86,6 +88,8 @@ project(":skute-streamer") {
     testCompile("org.glassfish.jersey.containers:jersey-container-jdk-http:$jerseyVersion")
     testCompile("org.mockito:mockito-all:$mockitoVersion")
   }
+
+  mainClassName = "com.microsoft.cisl.skute.SkuteStreamer"
 }
 
 project(":skute-core") {
@@ -133,7 +137,7 @@ project(":skute-hadoop-filesystem") {
  //     exclude group: 'com.sun.jersey'
 //    }
 
-    testCompile("org.apache.hadoop:hadoop-minicluster:$hadoopVersion")// {
+    compile("org.apache.hadoop:hadoop-minicluster:$hadoopVersion")// {
    //   exclude group: 'com.sun.jersey'
 //    }
   }
@@ -198,10 +202,15 @@ project(":skute-client") {
 
 project(":skute-webhdfs-test") {
   description "Start a Skute Server and Streamer backed up an Hadoop filesystem."
+
+  apply plugin: 'application'
+
   dependencies {
     compile project(':skute-filesystem')
     compile project(':skute-server')
     compile project(':skute-hadoop-filesystem')
   }
+
+  mainClassName = "com.microsoft.cisl.skute.server.SkuteServer"
 }
 
