@@ -104,7 +104,26 @@ public class SkuteServer {
           final SnapshotNameParam snapshotName
       ) throws IOException, InterruptedException {
     // @TODO: Implement me!
-    return notYetImplemented();
+    if (LOG.isTraceEnabled()) {
+      LOG.trace(String.format("DELETE: path = %s, recursive = %b", path, recursive.getValue()));
+    }
+
+    try {
+      SkuteResult result = getFileSystem().delete(path.getAbsolutePath(), recursive.getValue());
+      String js = JsonUtil.toJsonString("boolean", result == SkuteResult.OK);
+      Response response = Response.ok(js).type(MediaType.APPLICATION_JSON).build();
+
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("DELETE response = "  + response);
+      }
+
+      return response;
+    }catch (Exception e) {
+      if (LOG.isWarnEnabled()) {
+        LOG.warn(String.format("Exception while processing delete (path = %s, recursive = %b), exception = %s", path, recursive.getValue(), e.getMessage()));
+      }
+      return Response.serverError().build(); // @TODO: Verify error behavior between us and webhdfs
+    }
   }
 
   /** Handle HTTP PUT request for the root. */
@@ -326,6 +345,7 @@ public class SkuteServer {
           if (LOG.isWarnEnabled()) {
             LOG.warn(String.format("Exception while processing mkdirs (path = %s, permission = %04d) from %s", path, permission.getFsPermission().toShort()));
           }
+          return Response.serverError().build(); // @TODO: Verify error behavior between us and webhdfs
         }
 
       }

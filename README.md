@@ -17,7 +17,7 @@ Skute structure-
 * skute-hadoop-filesystem: Skute-filesystem implemented against org.apache.hadoop.FileSystem.
   ** Allows skute-server to run against an existing Hadoop system, specifically HDFS or Chris' Shim layer.
 
-* skute-webhdfs-integration-test: The above four projects should allow everything to tie together directly.
+* skute-webhdfs-test: The above four projects should allow everything to tie together directly.
   ** This project tests the correctness of the skute-server/streamer classes against minidfs clusters.
 
 * (possible): skute-was-shim-layer: Implementation of skute-filesystem backed directly by Chris' JNI code.
