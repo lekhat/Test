@@ -51,6 +51,30 @@ public class Utils {
 
   public static void runServer(Package pckg, String [] args) throws Exception {
     Config conf = ConfigFactory.load();
+
+    SkuteHttpServer shs = getSkuteHttpServer(pckg, conf);
+
+    shs.start();
+
+    try {
+      if (LOG.isInfoEnabled()) {
+        LOG.info("Putting main thread to sleep. Nighty night.");
+      }
+
+      Thread.sleep(Long.MAX_VALUE);
+    } catch(InterruptedException ie) {
+      if (LOG.isInfoEnabled()) {
+        LOG.info("Caught interrupted exception. Exiting.", ie);
+        shs.getSkuteFileSystem().stop();
+
+        shs.stop();
+        return;
+      }
+    }
+
+  }
+
+  public static SkuteHttpServer getSkuteHttpServer(Package pckg, Config conf) throws Exception {
     if (LOG.isDebugEnabled()) {
       LOG.debug("Conf = " + conf.toString());
     }
@@ -66,8 +90,6 @@ public class Utils {
     if (LOG.isInfoEnabled()) {
       LOG.info("Skute HTTP server port = " + port);
     }
-
-
     SkuteHttpServer shs = new SkuteHttpServerBuilder()
         .setPort(port)
         .setServerPackage(pckg)
@@ -77,24 +99,6 @@ public class Utils {
     if (LOG.isInfoEnabled()) {
       LOG.info("Starting Skute HTTP server.");
     }
-
-    shs.start();
-
-    try {
-      if (LOG.isInfoEnabled()) {
-        LOG.info("Putting main thread to sleep. Nighty night.");
-      }
-
-      Thread.sleep(Long.MAX_VALUE);
-    } catch(InterruptedException ie) {
-      if (LOG.isInfoEnabled()) {
-        LOG.info("Caught interrupted exception. Exiting.", ie);
-        fs.stop();
-
-        shs.stop();
-        return;
-      }
-    }
-
+    return shs;
   }
 }

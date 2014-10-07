@@ -34,7 +34,11 @@ public class SkuteHttpServer {
 
   private final Server server;
 
+  private final SkuteFileSystem skuteFileSystem;
+
   protected SkuteHttpServer(int port, Package serverPackage, SkuteFileSystem fs) throws Exception {
+    this.skuteFileSystem = fs;
+
     server = new Server(port);
     Context context = new Context(Context.SESSIONS);
     context.setContextPath("/");
@@ -52,6 +56,10 @@ public class SkuteHttpServer {
       LOG.info("Server = " + server);
     }
 
+  }
+
+  public SkuteFileSystem getSkuteFileSystem() {
+    return skuteFileSystem;
   }
 
   public void start() throws Exception {
