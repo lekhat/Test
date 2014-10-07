@@ -22,11 +22,11 @@ import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
 import com.microsoft.cisl.skute.filesystem.SkuteResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.permission.FsPermission;
 
-import java.io.IOException;
+import static com.microsoft.cisl.skute.filesystem.SkuteResult.OK;
+import static com.microsoft.cisl.skute.filesystem.SkuteResult.ERR;
 
 /**
  * An instance of a SkuteFileSystem backed by an org.apache.hadoop.FileSystem.
@@ -48,18 +48,122 @@ public class SkuteHadoopFileSystem implements SkuteFileSystem {
     fs.close();
   }
 
-  @Override
-  public SkuteResult mkdir(String p, short permission) {
-    Path path = new Path(p);
-    try {
-      fs.mkdirs(path, new FsPermission(permission));
-    } catch (IOException e) {
-      if (LOG.isWarnEnabled()) {
-        LOG.warn(String.format("Exception while processing mkdirs (path = %s, permission = %04d) from %s", path, permission));
-      }
+  private SkuteResult booleanToResult(boolean b) {
+    return b ? OK : ERR;
+  }
 
-      return SkuteResult.ERR;
-    }
-    return SkuteResult.OK;
+  @Override
+  public SkuteResult mkdir(String p, short permission) throws Exception {
+    Path path = new Path(p);
+    return booleanToResult(fs.mkdirs(path, new FsPermission(permission)));
+  }
+
+  @Override
+  public SkuteResult rename(String path, String newPath) throws Exception {
+    return booleanToResult(fs.rename(new Path(path), new Path(newPath)));
+  }
+
+  @Override
+  public SkuteResult setReplication(String path, short replication) throws Exception {
+    return booleanToResult(fs.setReplication(new Path(path), replication));
+  }
+
+  @Override
+  public SkuteResult setOwner(String path, String owner, String group) throws Exception {
+    fs.setOwner(new Path(path), owner, group);
+
+    return OK;
+  }
+
+  @Override
+  public SkuteResult setPermission(String path, short permission) throws Exception {
+    fs.setPermission(new Path(path), FsPermission.createImmutable(permission));
+
+    return OK;
+  }
+
+  @Override
+  public SkuteResult setTimes(String path, Long modificationTime, Long accessTime) throws Exception {
+    fs.setTimes(new Path(path), modificationTime, accessTime);
+
+    return OK;
+  }
+
+  @Override
+  public SkuteResult open(String path) throws Exception {
+    // @TODO Implement me!
+    throw new RuntimeException("Not yet implemented!");
+  }
+
+  @Override
+  public SkuteResult open(String path, int bufferSize) throws Exception {
+    // @TODO Implement me!
+    throw new RuntimeException("Not yet implemented!");
+  }
+
+  @Override
+  public SkuteResult<BlockLocation[]> getBlockLocations(final String path, final long start, final Long len) throws Exception {
+    return new SkuteResult<BlockLocation[]>() {
+      @Override
+      public BlockLocation[] getResult() throws Exception {
+        return fs.getFileBlockLocations(new Path(path), start, len != null ? len : Long.MAX_VALUE);
+      }
+    };
+  }
+
+  @Override
+  public SkuteResult<FileStatus> getFileStatus(final String path) throws Exception {
+    return new SkuteResult<FileStatus>() {
+      @Override
+      public FileStatus getResult() throws Exception {
+        return fs.getFileStatus(new Path(path));
+      }
+    };
+  }
+
+  @Override
+  public SkuteResult<FileStatus []> listStatus(final String path) throws Exception {
+    return new SkuteResult<FileStatus[]>() {
+      @Override
+      public FileStatus[] getResult() throws Exception {
+        return fs.listStatus(new Path(path));
+      }
+    };
+  }
+
+  @Override
+  public SkuteResult<ContentSummary> getContentSummary(final String path) throws Exception {
+    return new SkuteResult<ContentSummary>() {
+      @Override
+      public ContentSummary getResult() throws Exception {
+        return fs.getContentSummary(new Path(path));
+      }
+    };
+  }
+
+  @Override
+  public SkuteResult<FileChecksum> getFileChecksum(final String path) throws Exception {
+    return new SkuteResult<FileChecksum>() {
+      @Override
+      public FileChecksum getResult() throws Exception {
+        return fs.getFileChecksum(new Path(path));
+      }
+    };
+  }
+
+  @Override
+  public SkuteResult<Path> getHomeDirectory(String user) throws Exception {
+    // TODO: Good time to figure out how we're passing the user credentials
+    return new SkuteResult<Path>() {
+      @Override
+      public Path getResult() throws Exception {
+        return fs.getHomeDirectory();
+      }
+    };
+  }
+
+  @Override
+  public SkuteResult delete(String path, boolean recursive) throws Exception {
+    return booleanToResult(fs.delete(new Path(path), recursive));
   }
 }

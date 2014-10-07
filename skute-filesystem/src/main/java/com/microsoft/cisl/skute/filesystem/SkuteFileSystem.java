@@ -20,9 +20,66 @@ package com.microsoft.cisl.skute.filesystem;
 
 public interface SkuteFileSystem {
 
+  public static String ROOT = "/";
+
   public void start() throws Exception;
 
   public void stop() throws Exception;
 
   public SkuteResult mkdir(String path, short permission) throws Exception;
+
+  public SkuteResult rename(String path, String newPath) throws Exception;
+
+  // @TODO: Implement
+  //public SkuteResult createSymlink
+
+  public SkuteResult setReplication(String path, short replication) throws Exception;
+
+  public SkuteResult setOwner(String path, String owner, String group) throws Exception;
+
+  public SkuteResult setPermission(String path, short permission) throws Exception;
+
+  public SkuteResult setTimes(String path, Long modificationTime, Long accessTime) throws Exception;
+
+  // @TODO Implement
+  //public SkuteResult renewDelegationToken
+  //public SkuteResult cancelDelegationToken
+  //public SkuteResult modifyACLEntries
+  //public SkuteResult removeACLEntries
+  //public SkuteResult removeDefaultACL
+  //public SkuteResult removeACL
+  //public SkuteResult setACL
+  //public SkuteResult setXAttr
+  //public SkuteResult removeXAttr
+  //public SkuteResult createSnapshot
+  //public SkuteResult renameSnapshot
+
+  //public SkuteResult append
+  //public SkuteResult concat
+
+  public SkuteResult open(String path) throws Exception;
+
+  public SkuteResult open(String path, int bufferSize) throws Exception;
+
+  public SkuteResult getBlockLocations(String path, long start, Long len) throws Exception;
+
+  public SkuteResult getFileStatus(String path) throws Exception;
+
+  public SkuteResult listStatus(String path) throws Exception;
+
+  public SkuteResult getContentSummary(String path) throws Exception;
+
+  public SkuteResult getFileChecksum(String path) throws Exception;
+
+  //public SkuteResult getDelegationToken
+
+  public SkuteResult getHomeDirectory(String user) throws Exception;
+
+  //public SkuteResult getAclStatus
+  //public SkuteResult getXAttrs
+  //public SkuteResult listXAttrs
+
+  public SkuteResult delete(String path, boolean recursive) throws Exception;
+
+  //public SkuteResult deleteSnapshot
 }

@@ -18,7 +18,19 @@
  */
 package com.microsoft.cisl.skute.filesystem;
 
-public interface SkuteResult {
-  public final static SkuteResult OK = new SkuteResult() {};
-  public final static SkuteResult ERR = new SkuteResult() {};
+public interface SkuteResult<T> {
+  public final static SkuteResult OK = new SkuteResult<Void>() {
+    @Override
+    public Void getResult() throws Exception {
+      return null;
+    }
+  };
+  public final static SkuteResult ERR = new SkuteResult<Void>() {
+    @Override
+    public Void getResult() throws Exception {
+      return null;
+    }
+  };
+
+  public T getResult() throws Exception;
 }
