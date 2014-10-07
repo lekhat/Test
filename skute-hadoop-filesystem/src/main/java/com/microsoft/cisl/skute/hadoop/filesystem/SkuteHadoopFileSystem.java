@@ -152,6 +152,11 @@ public class SkuteHadoopFileSystem implements SkuteFileSystem {
   }
 
   @Override
+  public String toString() {
+    return this.getClass().getName() + ": oah.FileSystem = " + fs.toString();
+  }
+
+  @Override
   public SkuteResult<Path> getHomeDirectory(String user) throws Exception {
     // TODO: Good time to figure out how we're passing the user credentials
     return new SkuteResult<Path>() {

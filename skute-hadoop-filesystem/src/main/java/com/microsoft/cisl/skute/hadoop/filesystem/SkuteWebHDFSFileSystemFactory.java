@@ -21,6 +21,8 @@ package com.microsoft.cisl.skute.hadoop.filesystem;
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystemFactory;
 import com.typesafe.config.Config;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
@@ -30,12 +32,16 @@ import org.apache.hadoop.hdfs.MiniDFSCluster;
  * and demonstration.
  */
 public class SkuteWebHDFSFileSystemFactory implements SkuteFileSystemFactory {
+  private static final Log LOG = LogFactory.getLog(SkuteWebHDFSFileSystemFactory.class);
+
   @Override
   public SkuteFileSystem getSkuteFileSystem(Config config) throws Exception {
     Configuration hadoopConf = new Configuration();
     final MiniDFSCluster cluster = new MiniDFSCluster.Builder(hadoopConf).build();
 
     final FileSystem fs = cluster.getFileSystem();
+
+    LOG.info("WebHDFS URI= " + fs.getUri());
 
     return new SkuteHadoopFileSystem(fs);
   }
