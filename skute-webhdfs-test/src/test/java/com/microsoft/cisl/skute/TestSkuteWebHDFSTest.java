@@ -52,5 +52,10 @@ public class TestSkuteWebHDFSTest {
 
     assertTrue(webhdfsClient.mkdirs(new Path("/howdy")));
     assertTrue(webhdfsClient.delete(new Path("/howdy"), false));
+
+    httpServer.getSkuteFileSystem().stop();
+
+    httpServer.stop();
+
   }
 }
