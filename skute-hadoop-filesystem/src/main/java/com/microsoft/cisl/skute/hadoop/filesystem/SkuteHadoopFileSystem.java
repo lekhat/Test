@@ -18,6 +18,7 @@
  */
 package com.microsoft.cisl.skute.hadoop.filesystem;
 
+import com.microsoft.cisl.skute.filesystem.SkuteFileStatus;
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
 import com.microsoft.cisl.skute.filesystem.SkuteResult;
 import org.apache.commons.logging.Log;
@@ -122,11 +123,22 @@ public class SkuteHadoopFileSystem implements SkuteFileSystem {
   }
 
   @Override
-  public SkuteResult<FileStatus []> listStatus(final String path) throws Exception {
-    return new SkuteResult<FileStatus[]>() {
+  public SkuteResult<SkuteFileStatus[]> listStatus(final String path) throws Exception {
+    FileStatus[] fileStatuses = fs.listStatus(new Path(path));
+
+    if(fileStatuses == null) {
+      return null;
+    }
+
+    final SkuteHadoopFileStatus [] skuteHadoopFileStatuses = new SkuteHadoopFileStatus[fileStatuses.length];
+    for(int i = 0; i < fileStatuses.length; i++) { // missing the map operation...
+      skuteHadoopFileStatuses[i] = new SkuteHadoopFileStatus(fileStatuses[i]);
+    }
+
+    return new SkuteResult<SkuteFileStatus[]>() {
       @Override
-      public FileStatus[] getResult() throws Exception {
-        return fs.listStatus(new Path(path));
+      public SkuteFileStatus[] getResult() throws Exception {
+        return skuteHadoopFileStatuses;
       }
     };
   }

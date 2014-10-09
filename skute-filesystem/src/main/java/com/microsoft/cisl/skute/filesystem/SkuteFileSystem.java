@@ -65,7 +65,7 @@ public interface SkuteFileSystem {
 
   public SkuteResult getFileStatus(String path) throws Exception;
 
-  public SkuteResult listStatus(String path) throws Exception;
+  public SkuteResult<SkuteFileStatus []> listStatus(String path) throws Exception;
 
   public SkuteResult getContentSummary(String path) throws Exception;
 

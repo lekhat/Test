@@ -22,12 +22,14 @@ import com.microsoft.cisl.skute.hadoop.filesystem.SkuteWebHDFSFileSystemFactory;
 import com.microsoft.cisl.skute.server.SkuteServer;
 import com.typesafe.config.Config;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.junit.Test;
 
 import java.net.URI;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -51,6 +53,14 @@ public class TestSkuteWebHDFSTest {
     FileSystem webhdfsClient = FileSystem.get(uri, hadoopConfiguration);
 
     assertTrue(webhdfsClient.mkdirs(new Path("/howdy")));
+
+    FileStatus[] z = webhdfsClient.listStatus(new Path("/"));
+
+    assertEquals(1, z.length);
+
+    assertEquals("howdy", z[0].getPath().getName());
+    assertTrue(z[0].isDirectory());
+
     assertTrue(webhdfsClient.delete(new Path("/howdy"), false));
 
     httpServer.getSkuteFileSystem().stop();

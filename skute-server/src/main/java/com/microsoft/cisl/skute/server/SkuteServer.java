@@ -18,13 +18,18 @@
  */
 package com.microsoft.cisl.skute.server;
 
+import com.google.common.base.Charsets;
 import com.microsoft.cisl.skute.UserGroupInformationPlaceHolder;
 import com.microsoft.cisl.skute.Utils;
+import com.microsoft.cisl.skute.filesystem.SkuteFileStatus;
 import com.microsoft.cisl.skute.filesystem.SkuteFileSystem;
 import com.microsoft.cisl.skute.filesystem.SkuteResult;
 import com.sun.jersey.spi.container.ResourceFilters;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.permission.FsPermission;
+import org.apache.hadoop.hdfs.protocol.HdfsFileStatus;
 import org.apache.hadoop.hdfs.web.JsonUtil;
 import org.apache.hadoop.hdfs.web.ParamFilter;
 import org.apache.hadoop.hdfs.web.resources.*;
@@ -34,7 +39,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.*;
 import java.util.List;
 
 @Path("")
@@ -343,7 +349,7 @@ public class SkuteServer {
           return response;
         }catch (Exception e) {
           if (LOG.isWarnEnabled()) {
-            LOG.warn(String.format("Exception while processing mkdirs (path = %s, permission = %04d) from %s", path, permission.getFsPermission().toShort()));
+            LOG.warn(String.format("Exception while processing mkdirs (path = %s, permission = %04d)", path, permission.getFsPermission().toShort()));
           }
           return Response.serverError().build(); // @TODO: Verify error behavior between us and webhdfs
         }
@@ -495,8 +501,47 @@ public class SkuteServer {
       }
       case LISTSTATUS:
       {
-        // @TODO: Implement me!
-        return notYetImplemented();
+        try {
+          final SkuteFileStatus[] ls = getFileSystem().listStatus(path.getAbsolutePath()).getResult();
+          if(ls == null) {
+            throw new FileNotFoundException("File does not exist: " + path.getAbsolutePath());
+          }
+
+          StreamingOutput so =  new StreamingOutput() {
+            @Override
+            public void write(final OutputStream outstream) throws IOException {
+              final PrintWriter out = new PrintWriter(new OutputStreamWriter(
+                  outstream, Charsets.UTF_8));
+              out.println("{\"" + FileStatus.class.getSimpleName() + "es\":{\""
+                  + FileStatus.class.getSimpleName() + "\":[");
+
+              for(int i = 0; i < ls.length; i++) {
+                SkuteFileStatus sfs = ls[i];
+
+                // Forgive us for this next line...
+                HdfsFileStatus s = new HdfsFileStatus(sfs.getLen(), sfs.isDirectory(), sfs.getReplication(), sfs.getBlockSize(), sfs.getModificationTime(), sfs.getAccessTime(), FsPermission.createImmutable(sfs.getPermission()), sfs.getOwner(), sfs.getGroup(), null, sfs.getPath().getBytes(), 0, 0);
+
+                out.print(JsonUtil.toJsonString(s, false));
+                if(i < ls.length - 1) {
+                  out.println(',');
+                }
+              }
+
+              out.println();
+              out.println("]}}");
+              out.flush();
+            }
+          };
+          return Response.ok(so).type(MediaType.APPLICATION_JSON).build();
+        } catch (Exception e) {
+          if(e instanceof FileNotFoundException) {
+            throw (FileNotFoundException)e;
+          }
+          if (LOG.isWarnEnabled()) {
+            LOG.warn(String.format("Exception while processing LISTSTATUS (path = %s) from %s", path));
+          }
+          return Response.serverError().build(); // @TODO: Verify error behavior between us and webhdfs
+        }
       }
       case GETCONTENTSUMMARY:
       {
