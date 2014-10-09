@@ -28,11 +28,11 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 
 /**
- * Crate a SkuteFileSystem backed by a local WebHDFS instance; intended for testing
+ * Crate a SkuteFileSystem backed by a MiniDFSCluster instance; intended for testing
  * and demonstration.
  */
-public class SkuteWebHDFSFileSystemFactory implements SkuteFileSystemFactory {
-  private static final Log LOG = LogFactory.getLog(SkuteWebHDFSFileSystemFactory.class);
+public class SkuteMiniDFSClusterFileSystemFactory implements SkuteFileSystemFactory {
+  private static final Log LOG = LogFactory.getLog(SkuteMiniDFSClusterFileSystemFactory.class);
 
   @Override
   public SkuteFileSystem getSkuteFileSystem(Config config) throws Exception {

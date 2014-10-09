@@ -18,7 +18,7 @@
  */
 package com.microsoft.cisl.skute;
 
-import com.microsoft.cisl.skute.hadoop.filesystem.SkuteWebHDFSFileSystemFactory;
+import com.microsoft.cisl.skute.hadoop.filesystem.SkuteMiniDFSClusterFileSystemFactory;
 import com.microsoft.cisl.skute.server.SkuteServer;
 import com.typesafe.config.Config;
 import org.apache.hadoop.conf.Configuration;
@@ -42,7 +42,7 @@ public class TestSkuteWebHDFSTest {
   public void letUsConnect() throws Exception {
     Config conf = mock(Config.class);
     int port = 4545;
-    when(conf.getString("skute.fs.factory")).thenReturn(SkuteWebHDFSFileSystemFactory.class.getCanonicalName().toString());
+    when(conf.getString("skute.fs.factory")).thenReturn(SkuteMiniDFSClusterFileSystemFactory.class.getCanonicalName().toString());
     when(conf.getInt("skute.http.server.port")).thenReturn(port);
     SkuteHttpServer httpServer = Utils.getSkuteHttpServer(SkuteServer.class.getPackage(), conf);
 
