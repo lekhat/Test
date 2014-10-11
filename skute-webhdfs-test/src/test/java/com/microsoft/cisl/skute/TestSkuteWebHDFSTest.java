@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 
 public class TestSkuteWebHDFSTest {
 
-  // Let's get circular.  We're going to create a WebHDFS-backed Skute server
+  // We're going to create a MiniDFSCluster-backed Skute server
   // that we'll then interact with via the WebHDFS client.
   @Test
   public void letUsConnect() throws Exception {
@@ -47,12 +47,15 @@ public class TestSkuteWebHDFSTest {
     SkuteHttpServer httpServer = Utils.getSkuteHttpServer(SkuteServer.class.getPackage(), conf);
 
     httpServer.start();
+    System.out.println("Started Skute Server at " + httpServer);
 
     Configuration hadoopConfiguration = new Configuration();
     URI uri = new URI("webhdfs://localhost:" + port);
     FileSystem webhdfsClient = FileSystem.get(uri, hadoopConfiguration);
 
+    System.out.println("Connected to SkuteServer over " + webhdfsClient);
     assertTrue(webhdfsClient.mkdirs(new Path("/howdy")));
+    System.out.println("Created new directory: /howdy");
 
     FileStatus[] z = webhdfsClient.listStatus(new Path("/"));
 
@@ -60,12 +63,16 @@ public class TestSkuteWebHDFSTest {
 
     assertEquals("howdy", z[0].getPath().getName());
     assertTrue(z[0].isDirectory());
+    System.out.println("Verified howdy is correct via listStatus");
 
     assertTrue(webhdfsClient.delete(new Path("/howdy"), false));
+    System.out.println("Deleted /howdy");
 
     httpServer.getSkuteFileSystem().stop();
+    System.out.println("Stopped SkuteFileSystem");
 
     httpServer.stop();
+    System.out.println("Stopped SkuteServer");
 
   }
 }
